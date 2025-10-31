@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>بحث بيانات الطالب</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f2f2f2; }
+    label { display: block; margin-top: 10px; }
+    input[type=text] { padding: 5px; width: 200px; }
+    button { padding: 5px 10px; margin-top: 10px; }
+    .result { margin-top: 20px; padding: 10px; background-color: #fff; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<h2>نظام البحث عن بيانات الطالب</h2>
+
+<label for="studentId">أدخل رقم الطالب (ID):</label>
+<input type="text" id="studentId">
+<button onclick="searchStudent()">بحث</button>
+
+<div class="result" id="result"></div>
+
+<script>
+// بيانات الطلاب كاملة
+
+const students = [
+{id:0000000000, nom:"FETATI", prenom:"NARIMAN", spe:"Kinésithérapeutes De Santé Publique", mp:"2d7f87ad", ut:"38457613"},
+{id:0000000000, nom:"BENHAMED", prenom:"ABDELHAFID", spe:"Kinésithérapeutes De Santé Publique", mp:"pe972g3m", ut:"38613803"},
+{id:0000000000, nom:"OUARGA", prenom:"MOHAMED", spe:"Kinésithérapeutes De Santé Publique", mp:"35n38def", ut:"37502516"},
+{id:0003684290, nom:"HADDI", prenom:"MARWA", spe:"Kinésithérapeutes De Santé Publique", mp:"8fa8b8r2", ut:"38611107"},
+{id:0000000000, nom:"RAHOUI", prenom:"MALAK ABRAR", spe:"Kinésithérapeutes De Santé Publique", mp:"43rp22tf", ut:"38603408"},
+{id:0000000000, nom:"DJABRI", prenom:"HAYATP", spe:"Kinésithérapeutes De Santé Publique", mp:"87zbiv43", ut:"38020906"},
+{id:0003676346, nom:"NASRALLAH", prenom:"HIBA FATIMA ZAHRA", spe:"Kinésithérapeutes De Santé Publique", mp:"5z55dm7m", ut:"38041408"},
+{id:0003682819, nom:"ZAAF", prenom:"SOUMIA", spe:"Kinésithérapeutes De Santé Publique", mp:"5774ihxb", ut:"38022802"},
+{id:0002782851, nom:"KHETTOU", prenom:"KAWTHER", spe:"Kinésithérapeutes De Santé Publique", mp:"6cmn993g", ut:"37502419"},
+{id:0000000000, nom:"BERRAIS", prenom:"MAJDA", spe:"Kinésithérapeutes De Santé Publique", mp:"rpn382w3", ut:"38018811"},
+{id:0002575338, nom:"BEN SAID", prenom:"MERIEM BATOUL", spe:"Kinésithérapeutes De Santé Publique", mp:"zq83z7s2", ut:"38481003"},
+{id:0002596994, nom:"OUSALEM", prenom:"SABRINA", spe:"Kinésithérapeutes De Santé Publique", mp:"kqm5733i", ut:"38480306"},
+{id:0003643123, nom:"LACHAOUI", prenom:"IMANE", spe:"Kinésithérapeutes De Santé Publique", mp:"77na5c6s", ut:"38606603"},
+{id:0002593922, nom:"BOUBA", prenom:"YAKOUB", spe:"Kinésithérapeutes De Santé Publique", mp:"4a7r4f4w", ut:"37502910"},
+{id:0002774243, nom:"KHOUITER", prenom:"IMANE", spe:"Kinésithérapeutes De Santé Publique", mp:"h7me59g7", ut:"38479520"},
+{id:0003643255, nom:"MAALAININE CHADAD", prenom:"ASMAA", spe:"Kinésithérapeutes De Santé Publique", mp:"pux593h8", ut:"37501609"},
+{id:0000000000, nom:"ABACH", prenom:"AYOUB SALAH EDDINE", spe:"Kinésithérapeutes De Santé Publique", mp:"j76jhm82", ut:"38492608"},
+{id:0000000000, nom:"LATTOUI", prenom:"NECEREDDINE", spe:"Kinésithérapeutes De Santé Publique", mp:"f53dg86p", ut:"38016210"},
+{id:0000000000, nom:"YAHYAOUI", prenom:"SOUNDOUS", spe:"Kinésithérapeutes De Santé Publique", mp:"g93fv3b3", ut:"38024819"},
+{id:0003642493, nom:"GACHI", prenom:"FATIMA ZOHRA", spe:"Kinésithérapeutes De Santé Publique", mp:"y79r7mm4", ut:"38004919"},
+{id:0004721440, nom:"MERZOUKA", prenom:"ZEYNEB", spe:"Assistants Médicaux De Santé Publique", mp:"ek23y25y", ut:"38602312"},
+{id:0013678011, nom:"DAHMANI", prenom:"WAFA", spe:"Assistants Médicaux De Santé Publique", mp:"w64s26sc", ut:"38009801"},
+{id:0003992026, nom:"OMARI", prenom:"KHDIDJA", spe:"Assistants Médicaux De Santé Publique", mp:"3sw6g98k", ut:"37500502"},
+{id:0002850269, nom:"KENTOULI", prenom:"RIHAB", spe:"Assistants Médicaux De Santé Publique", mp:"ub774z8m", ut:"37500511"},
+{id:0004527081, nom:"KHAMASSI", prenom:"INTISSAR MEBROUKA", spe:"Assistants Médicaux De Santé Publique", mp:"pdp449w2", ut:"38023308"},
+{id:0004695702, nom:"ZEGHAMRI", prenom:"TEQWA", spe:"Assistants Médicaux De Santé Publique", mp:"52vex6d7", ut:"38602305"},
+{id:0002934274, nom:"HARFOUCHE", prenom:"KHADIDJA", spe:"Assistants Médicaux De Santé Publique", mp:"x9wa23z4", ut:"38612901"},
+{id:0010092669, nom:"BENZAOUI", prenom:"LINA", spe:"Assistants Médicaux De Santé Publique", mp:"c28qc3d9", ut:"38610003"},
+{id:0006252138, nom:"OMIRI", prenom:"HADJER", spe:"Assistants Médicaux De Santé Publique", mp:"6du44w6r", ut:"38009715"},
+{id:0004355851, nom:"SRIDI", prenom:"ABDELKABIR", spe:"Assistants Médicaux De Santé Publique", mp:"v7er464s", ut:"38609908"},
+{id:0011184122, nom:"BENHAMMOU", prenom:"MARWA", spe:"Assistants Médicaux De Santé Publique", mp:"4jd5me58", ut:"38035414"},
+{id:0000000000, nom:"BELLAMECHE", prenom:"HADJER", spe:"Assistants Médicaux De Santé Publique", mp:"qf7cv394", ut:"37500711"},
+{id:0002894003, nom:"HALAIMIA NOUR ELYAKINE", prenom:"NOUR EL YAKINE", spe:"Assistants Médicaux De Santé Publique", mp:"5n92xsw3", ut:"37507503"},
+{id:0001555916, nom:"FECHFACHE", prenom:"IMANE", spe:"Assistants Médicaux De Santé Publique", mp:"s53x9dk8", ut:"37504408"},
+{id:0010115909, nom:"BENDOUDA", prenom:"WAHIBA MOUNIA", spe:"Assistants Médicaux De Santé Publique", mp:"3vw66uk8", ut:"38035605"},
+{id:0006226042, nom:"MEKHAZNI", prenom:"OUMAIMA", spe:"Assistants Médicaux De Santé Publique", mp:"j93r7xy7", ut:"37499412"},
+{id:0002906868, nom:"FELLOUS", prenom:"MERIEM", spe:"Assistants Médicaux De Santé Publique", mp:"4s73ajr2", ut:"38009707"},
+{id:0004535600, nom:"CHIKHAOUI", prenom:"SOULAF", spe:"Assistants Médicaux De Santé Publique", mp:"px52c7r9", ut:"37500517"},
+{id:0002934334, nom:"HAMDAOUI", prenom:"HADJER", spe:"Assistants Médicaux De Santé Publique", mp:"32ipp3x6", ut:"38602411"},
+{id:0002445883, nom:"MOKHTARI", prenom:"ABDELHAMID", spe:"Assistants Médicaux De Santé Publique", mp:"5c58td4z", ut:"38025714"},
+{id:0002760541, nom:"BENAISSA", prenom:"ABDELKARIM", spe:"Assistants Médicaux De Santé Publique", mp:"84ss6t3g", ut:"38609909"},
+{id:0001384671, nom:"BOULANOUAR", prenom:"HADJA MAMA", spe:"Assistants Sociaux De Santé Publique", mp:"u3h45nv5", ut:"38604503"},
+{id:0002754311, nom:"MAZOUZ", prenom:"SAFA", spe:"Assistants Sociaux De Santé Publique", mp:"ac339wi3", ut:"38009520"},
+{id:0002765312, nom:"MOULOUD", prenom:"MERYEM", spe:"Assistants Sociaux De Santé Publique", mp:"86d7c9vj", ut:"38602613"},
+{id:0009796496, nom:"DAHMANE", prenom:"ABDELKHALEK", spe:"Assistants Sociaux De Santé Publique", mp:"m3r2e44u", ut:"38030014"},
+{id:0002835482, nom:"ABDELAZIZ", prenom:"KAWTER", spe:"Assistants Sociaux De Santé Publique", mp:"5v6v6c3h", ut:"38035310"},
+{id:0002688365, nom:"SEDDIKI", prenom:"MANAL AICHA", spe:"Assistants Sociaux De Santé Publique", mp:"5rp93t5g", ut:"38002002"},
+{id:0009825539, nom:"DJAAFRI", prenom:"NOUR EL HOUDA", spe:"Assistants Sociaux De Santé Publique", mp:"862sv2nu", ut:"37028510"},
+{id:0002780784, nom:"MOULDI", prenom:"IKHLAS", spe:"Assistants Sociaux De Santé Publique", mp:"q438f4df", ut:"37031301"},
+{id:0004695752, nom:"BENOTMANE", prenom:"HOURIA", spe:"Assistants Sociaux De Santé Publique", mp:"63kd6ya6", ut:"38034812"},
+{id:0002730503, nom:"LENSARI", prenom:"ROQUYA", spe:"Assistants Sociaux De Santé Publique", mp:"hy598n5d", ut:"37011009"},
+{id:0000154669, nom:"CHIBOUB", prenom:"FADWA MANAL", spe:"Assistants Sociaux De Santé Publique", mp:"9q8r8sm5", ut:"37500614"},
+{id:0010225674, nom:"BOUAZZA", prenom:"FATIMA ZAHRA", spe:"Assistants Sociaux De Santé Publique", mp:"8wp84nv3", ut:"37500613"},
+{id:0001354746, nom:"BOUTADARA", prenom:"ASMAA", spe:"Assistants Sociaux De Santé Publique", mp:"64zp9c6w", ut:"37005811"},
+{id:0011124745, nom:"BOUTADARA", prenom:"NAWAL", spe:"Assistants Sociaux De Santé Publique", mp:"997vyyu7", ut:"37006118"},
+{id:0003647481, nom:"NADJMI", prenom:"AICHA", spe:"Assistants Sociaux De Santé Publique", mp:"p8ta5s34", ut:"37665520"},
+{id:0002753402, nom:"MAHFOUD", prenom:"MOHAMMED ELMESSOUD", spe:"Assistants Sociaux De Santé Publique", mp:"ggw429r5", ut:"37677915"},
+{id:0002760541, nom:"LEHBIB", prenom:"SALEC", spe:"Assistants Sociaux De Santé Publique", mp:"4p53rj2e", ut:"37499512"},
+
+{id:"0003156115", nom:"KHAIR", prenom:"IKRAM", spe:"Infirmiers De Santé Publique", mp:"p629q4ha", ut:"38037805"},
+{id:"0002797903", nom:"DJEBBARI", prenom:"NOUR EL HOUDA", spe:"Infirmiers De Santé Publique", mp:"53hu9je3", ut:"38615217"},
+{id:"0009370545", nom:"KENANDA", prenom:"ABDELBASSIT", spe:"Infirmiers De Santé Publique", mp:"ttrw2298", ut:"38039502"},
+{id:"0002778162", nom:"BOUFRIDI", prenom:"DOUNIA", spe:"Infirmiers De Santé Publique", mp:"ykc958e3", ut:"37502001"},
+{id:"0002782211", nom:"YAICHE", prenom:"HALIMA", spe:"Infirmiers De Santé Publique", mp:"6p9gu65h", ut:"38610913"},
+{id:"0002778451", nom:"BEN DAHANE", prenom:"DOUAA HADIL", spe:"Infirmiers De Santé Publique", mp:"73s3eap2", ut:"38020916"},
+{id:"0000000000", nom:"ABDERRAHMANE", prenom:"DOUAA", spe:"Infirmiers De Santé Publique", mp:"9pi9z9h5", ut:"37501916"},
+{id:"0004513999", nom:"KHIARI", prenom:"ISMAIL", spe:"Infirmiers De Santé Publique", mp:"37u98vic", ut:"38603015"},
+{id:"0002564100", nom:"MOURI", prenom:"MOHAMMED EL AMINE", spe:"Infirmiers De Santé Publique", mp:"q4a83n7t", ut:"38040518"},
+{id:"0000000000", nom:"FERDI", prenom:"FATNA", spe:"Infirmiers De Santé Publique", mp:"a9k9wh95", ut:"38040013"},
+{id:"0004655927", nom:"GOUCEM", prenom:"RACHA", spe:"Infirmiers De Santé Publique", mp:"mp955eu8", ut:"37508601"},
+{id:"0002788989", nom:"NAMI", prenom:"ABIR", spe:"Infirmiers De Santé Publique", mp:"9wa2c6g2", ut:"38605102"},
+{id:"0002637879", nom:"BOUKALMOUN", prenom:"HAFSA", spe:"Infirmiers De Santé Publique", mp:"v29d4pb3", ut:"38610912"},
+{id:"0004651027", nom:"FAKHOURI", prenom:"AICHA", spe:"Infirmiers De Santé Publique", mp:"22iu6h6a", ut:"38606619"},
+{id:"0002777750", nom:"MOUSSELIM", prenom:"HIBAT ARRAHMANE EL KHANSSA", spe:"Infirmiers De Santé Publique", mp:"su3468bn", ut:"38025302"},
+{id:"0002575003", nom:"BENMAHAMMED", prenom:"MERIEM", spe:"Infirmiers De Santé Publique", mp:"vijq4948", ut:"38605303"},
+{id:"0000000000", nom:"ABBAD", prenom:"CHAIMA", spe:"Infirmiers De Santé Publique", mp:"6a8hxx47", ut:"38039217"},
+{id:"0002759805", nom:"SALKI", prenom:"AMINA", spe:"Infirmiers De Santé Publique", mp:"7k5z49ky", ut:"38037402"},
+{id:"0004524996", nom:"KOUIDRI", prenom:"NADA ELYASSAMINE", spe:"Infirmiers De Santé Publique", mp:"7ii6y7t5", ut:"38041114"},
+{id:"0002910146", nom:"DAHMANI", prenom:"SAFA", spe:"Infirmiers De Santé Publique", mp:"n289qnq3", ut:"38611010"},
+
+{id:"0002714835", nom:"ABDELGHANI", prenom:"MOHAMED ISLAM", spe:"Infirmiers De Santé Publique", mp:"76cnq2e7", ut:"37502517"},
+{id:"0002637328", nom:"SRIDI", prenom:"ABDERRAHMANE", spe:"Infirmiers De Santé Publique", mp:"8wu823iz", ut:"38611305"},
+{id:"0002730654", nom:"SARIA", prenom:"KHADIDJA", spe:"Infirmiers De Santé Publique", mp:"3x7pm4h9", ut:"38015609"},
+{id:"0004658226", nom:"LAOUFI", prenom:"CHERIFA", spe:"Infirmiers De Santé Publique", mp:"ypx6t846", ut:"38039103"},
+{id:"0002776828", nom:"BELDJENNA", prenom:"FOUAD", spe:"Infirmiers De Santé Publique", mp:"c883ebq6", ut:"38025004"},
+{id:"0002756037", nom:"AYAT", prenom:"MOSTEFA", spe:"Infirmiers De Santé Publique", mp:"q337g4hw", ut:"38040915"},
+{id:"0002622296", nom:"ABDELGHANI", prenom:"SABRINA ISAAD", spe:"Infirmiers De Santé Publique", mp:"64fw65uj", ut:"38611009"},
+{id:"0002740549", nom:"BENLABBAS", prenom:"AMINA", spe:"Infirmiers De Santé Publique", mp:"24p6t7gz", ut:"38603008"},
+{id:"0002780255", nom:"BELMOKHTAR", prenom:"BESMA", spe:"Infirmiers De Santé Publique", mp:"7rv7y4c4", ut:"38608107"},
+{id:"0000000000", nom:"BENSLIMANE", prenom:"MOULAY ELMAHDI", spe:"Infirmiers De Santé Publique", mp:"w5729uun", ut:"38041016"},
+{id:"0011352285", nom:"LAAROUSSI", prenom:"CHAIMA", spe:"Infirmiers De Santé Publique", mp:"k79ke8m8", ut:"37502206"},
+{id:"0004655877", nom:"GRAINE", prenom:"IMANE", spe:"Infirmiers De Santé Publique", mp:"93w9eh8g", ut:"38011004"},
+{id:"0002782721", nom:"BEN YOUSSEF", prenom:"Kaouter", spe:"Infirmiers De Santé Publique", mp:"3jk897ba", ut:"37509013"},
+{id:"0002906233", nom:"ABDELMALEK", prenom:"HICHAM", spe:"Infirmiers De Santé Publique", mp:"gb769af6", ut:"38041418"},
+{id:"0002853795", nom:"LAHMAR", prenom:"AYOUB", spe:"Infirmiers De Santé Publique", mp:"kx3785xt", ut:"37508218"},
+{id:"0000000000", nom:"SALHI", prenom:"SALSABIL", spe:"Infirmiers De Santé Publique", mp:"6rn5h89t", ut:"38038902"},
+{id:"0002607046", nom:"BENSEBBAH", prenom:"BASMELA", spe:"Infirmiers De Santé Publique", mp:"i33s3aa3", ut:"37501805"},
+{id:"0002791494", nom:"MAZOUZ", prenom:"NESRINE", spe:"Infirmiers De Santé Publique", mp:"3k8d78mq", ut:"38022904"},
+{id:"0002802868", nom:"DJABER", prenom:"NOUR EL IMAN", spe:"Infirmiers De Santé Publique", mp:"448dds5f", ut:"38605304"},
+{id:"0009327913", nom:"HEMMANI", prenom:"HAMIDA", spe:"Infirmiers De Santé Publique", mp:"9v8sgx49", ut:"38610914"},
+{id:"0002777458", nom:"ZABOUB", prenom:"AMINA", spe:"Infirmiers De Santé Publique", mp:"9mi7h45c", ut:"38010704"},
+{id:"0002787995", nom:"MAMMERI", prenom:"HAFSA", spe:"Infirmiers De Santé Publique", mp:"c2t8f2t2", ut:"37501820"},
+{id:"0002731506", nom:"MEBARKI", prenom:"CUFA", spe:"Infirmiers De Santé Publique", mp:"gw5g6r98", ut:"37502202"},
+{id:"0009433084", nom:"KHELIFI", prenom:"NOUR EDDINE", spe:"Infirmiers De Santé Publique", mp:"rw5i5j97", ut:"38041305"},
+{id:"0009395835", nom:"HACHEMI", prenom:"SABRINE", spe:"Infirmiers De Santé Publique", mp:"4gxa834u", ut:"38613413"},
+{id:"0000000000", nom:"ZELIT", prenom:"MALAK", spe:"Infirmiers De Santé Publique", mp:"zw74t4n5", ut:"38040919"},
+{id:"002598913", nom:"TITAF", prenom:"BOUCHRA", spe:"Infirmiers De Santé Publique", mp:"q6s987hw", ut:"38038015"},
+{id:"0002637927", nom:"BENCHIKH", prenom:"DJAOUAD AKRAM", spe:"Infirmiers De Santé Publique", mp:"5nw8r6s5", ut:"38011117"},
+{id:"0002772296", nom:"TAHRI", prenom:"RAGHD", spe:"Infirmiers De Santé Publique", mp:"v74bj88f", ut:"38004205"},
+{id:"0009317613", nom:"KECHOUD", prenom:"ABDELBASSET ABDESSAMAD", spe:"Infirmiers De Santé Publique", mp:"5v654dyg", ut:"38024915"},
+{id:"0002765803", nom:"MECABIH", prenom:"CHAIMAA", spe:"Infirmiers De Santé Publique", mp:"3ir38vp7", ut:"38024906"},
+{id:"0003654703", nom:"BERREZIG", prenom:"DOUA", spe:"Infirmiers De Santé Publique", mp:"at748m7b", ut:"38024720"},
+{id:"0002609392", nom:"BECHERI", prenom:"FARAH", spe:"Infirmiers De Santé Publique", mp:"f85b6gm7", ut:"38026420"},
+{id:"0002581852", nom:"ADDOU", prenom:"HIBA NIHAL", spe:"Infirmiers De Santé Publique", mp:"zn66dj95", ut:"38018913"},
+{id:"0002790571", nom:"MOHAMED ABAB", prenom:"AZIZA", spe:"Infirmiers De Santé Publique", mp:"3s7g2ep8", ut:"37502309"},
+{id:"0002741708", nom:"DJEBBAR", prenom:"HICHAM", spe:"Infirmiers De Santé Publique", mp:"6dd594jw", ut:"38025305"},
+{id:"0002742643", nom:"TARGUI", prenom:"BOUBAKAR", spe:"Infirmiers De Santé Publique", mp:"e4x229wb", ut:"38608110"},
+{id:"0003644080", nom:"BELAREJ", prenom:"MINA", spe:"Infirmiers De Santé Publique", mp:"ju3558ze", ut:"38005810"},
+{id:"0002749313", nom:"DAHMANE", prenom:"HADJER", spe:"Infirmiers De Santé Publique", mp:"26r76yvy", ut:"37502816"},
+{id:"0002752399", nom:"MANI", prenom:"BOUCHRA", spe:"Infirmiers De Santé Publique", mp:"7h8d97iz", ut:"38024620"},
+{id:"0009796496", nom:"ALIANE", prenom:"RABIE KHALED", spe:"Infirmiers De Santé Publique", mp:"h6xe34q9", ut:"38038520"},
+{id:"0002765234", nom:"SEDDIKI", prenom:"Abedrazak marwan", spe:"Infirmiers De Santé Publique", mp:"358cp7wf", ut:"38039603"},
+{id:"0009353463", nom:"HASNI", prenom:"Bochra", spe:"Infirmiers De Santé Publique", mp:"8r6zaz22", ut:"37508403"},
+{id:"0002802779", nom:"DAHOU", prenom:"ABDELKADOUS", spe:"Infirmiers De Santé Publique", mp:"zev762r4", ut:"38608114"},
+{id:"0002905798", nom:"BOUARFA", prenom:"FATIMA ZOHRA", spe:"Infirmiers De Santé Publique", mp:"6g79bha9", ut:"38015917"},
+{id:"0004655925", nom:"FASSI", prenom:"SAADIA", spe:"Infirmiers De Santé Publique", mp:"ww5at482", ut:"38021008"},
+{id:"0002591103", nom:"TELHAOUI", prenom:"CHAYMA", spe:"Infirmiers De Santé Publique", mp:"2dm86tq6", ut:"38603213"},
+{id:"0009728398", nom:"KHELIFI", prenom:"NAFISSA", spe:"Infirmiers De Santé Publique", mp:"24mfb35z", ut:"38005909"},
+{id:"0002843780", nom:"MOSTADI", prenom:"FATIMA ZOHRA", spe:"Infirmiers De Santé Publique", mp:"787qtky3", ut:"38039918"},
+{id:"0002737264", nom:"RAHMANI", prenom:"GHANIA", spe:"Infirmiers De Santé Publique", mp:"6ca5cg69", ut:"38039819"},
+{id:"0002743317", nom:"TAHIRI", prenom:"IMANE", spe:"Infirmiers De Santé Publique", mp:"7ekkd762", ut:"38015510"},
+{id:"0000000000", nom:"ZIGHAM", prenom:"MOHAMED", spe:"Infirmiers De Santé Publique", mp:"x9t25x2x", ut:"37502512"},
+{id:"0003647291", nom:"ZEBAIR", prenom:"FIRDAWS", spe:"Infirmiers De Santé Publique", mp:"62n8exv9", ut:"38026501"},
+{id:"0003690144", nom:"BENKERROUM", prenom:"SARA", spe:"Infirmiers De Santé Publique", mp:"2a8q5fu5", ut:"38011413"},
+{id:"0002584001", nom:"AIDA", prenom:"HIBAT ARRAHMAN", spe:"Infirmiers De Santé Publique", mp:"s6pk6u55", ut:"38006010"},
+{id:"0002637333", nom:"CHAMEKHI", prenom:"DJOUMANA", spe:"Infirmiers De Santé Publique", mp:"298kc4rt", ut:"38003908"},
+{id:"0000000000", nom:"BOURBABA", prenom:"OUM ELKHEIR", spe:"Infirmiers De Santé Publique", mp:"36fd58xv", ut:"38610904"},
+{id:"0003648011", nom:"BELABED", prenom:"HOUSSEM ELDDINE", spe:"Infirmiers De Santé Publique", mp:"rz5p4d64", ut:"37501817"},
+{id:"0002905250", nom:"BETTINE", prenom:"ABDELKADIR", spe:"Infirmiers De Santé Publique", mp:"4g259mhk", ut:"37508810"},
+{id:"0002785393", nom:"MECABIH", prenom:"MERIEM", spe:"Infirmiers De Santé Publique", mp:"3556txsf", ut:"38025117"},
+{id:"0002771708", nom:"SELLAKH", prenom:"ALLAE", spe:"Infirmiers De Santé Publique", mp:"67im25kp", ut:"38003219"},
+{id:"0002572334", nom:"AFAIFIA", prenom:"KHALED SEYF EDDINE", spe:"Infirmiers De Santé Publique", mp:"5ks65pm9", ut:"37501906"},
+{id:"0002802837", nom:"AISSANI", prenom:"FARAH", spe:"Infirmiers De Santé Publique", mp:"e5ut5a34", ut:"38026419"},
+{id:"0002734836", nom:"TEHIRICHI", prenom:"ANES", spe:"Infirmiers De Santé Publique", mp:"3re3bb88", ut:"38024514"},
+{id:"0002787264", nom:"TOUHAMI", prenom:"MOHAMMED EL HADJ", spe:"Infirmiers De Santé Publique", mp:"x629brs3", ut:"38025103"},
+{id:"0002546938", nom:"TELMANI", prenom:"RIHAB", spe:"Infirmiers De Santé Publique", mp:"q9hh2c48", ut:"38608402"},
+{id:"0004658480", nom:"DJEMILA", prenom:"ABEDALKARIM", spe:"Infirmiers De Santé Publique", mp:"82xx2w9v", ut:"37503201"},
+{id:"0002910147", nom:"BELHAFIANE", prenom:"IMANE", spe:"Infirmiers De Santé Publique", mp:"9p925zib", ut:"38020808"},
+{id:"0002785540", nom:"AMMARI", prenom:"ISRAA", spe:"Infirmiers De Santé Publique", mp:"7j7i48wn", ut:"37508219"},
+
+
+{id:0002703232, nom:"ACHAR", prenom:"ANFAL", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"s5b62x8g", ut:"38606602"},
+{id:0003653916, nom:"MOUSSAOUI", prenom:"LAILA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"hna5624v", ut:"37502504"},
+{id:0000000000, nom:"ALLALI", prenom:"DOUA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"bx733x2p", ut:"38611302"},
+{id:0000000000, nom:"BOUKALMOUN", prenom:"MOHAMED YACINE", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"968wpa7s", ut:"38611105"},
+{id:0003693655, nom:"RABET", prenom:"OUMAIMA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"qqxq5225", ut:"38603007"},
+{id:0003641404, nom:"MERAZI", prenom:"ABDELKADER", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"5hdh544n", ut:"38039619"},
+{id:0002611763, nom:"MOSTEFAOUI", prenom:"MAROUA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"sjk669c6", ut:"37509204"},
+{id:0002790612, nom:"HASSANI", prenom:"MOHAMMED AMINE", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"y994tbt4", ut:"38613804"},
+{id:0002610858, nom:"BOUAFIA", prenom:"SOUNDOUS", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"2tp6cr74", ut:"37502118"},
+{id:0000000000, nom:"LAFANE", prenom:"MOUAD", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"64c5xb9y", ut:"38603407"},
+{id:0002612356, nom:"NABBOU", prenom:"AMANI", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"uq4855mx", ut:"38003306"},
+{id:0000000000, nom:"BENAICHATA", prenom:"KENZA IKRAM", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"3ry78vc7", ut:"38040216"},
+{id:0002610418, nom:"ARBAOUI", prenom:"HADJER", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"kx9cs692", ut:"38016216"},
+{id:0003667825, nom:"MOURI", prenom:"EL ABBES", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"4f2piy37", ut:"38037811"},
+{id:0000000000, nom:"BAHOU", prenom:"ALLADIN", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"3xt2t47m", ut:"38603307"},
+{id:0003655550, nom:"GHOUIZI", prenom:"MOHAMMED EL BACHIR", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"7bdj44w7", ut:"38016101"},
+{id:0002577859, nom:"AMROUSSE", prenom:"MOHAMMED ALI", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"2588fzuu", ut:"37509116"},
+{id:0002589631, nom:"GASMI", prenom:"OUARDA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"q428yvp9", ut:"38025309"},
+{id:0002616547, nom:"BEN DAHANE", prenom:"SARRA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"3n92y9mw", ut:"38004306"},
+{id:0003640931, nom:"REGUIBI", prenom:"MAATASSEM", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"f5633qfj", ut:"37502708"},
+{id:0002598328, nom:"BELKACEM", prenom:"RACHIDA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"68nt5uw2", ut:"38603120"},
+{id:0003656837, nom:"HENNICHE", prenom:"AHMED", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"94f8ae9a", ut:"37508203"},
+{id:0002744955, nom:"MOKHTARI", prenom:"FATMA ELZAHRA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"i887p8ej", ut:"37509002"},
+{id:0002608495, nom:"ZINE", prenom:"HANANE", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"293s5muv", ut:"38015605"},
+{id:0002607101, nom:"KHAMLAOUI", prenom:"MOHAMMED YASSER", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"8dfm324i", ut:"38021117"},
+{id:0002597309, nom:"ABDELAZIZ", prenom:"MOHAMMED AKRAM", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"p3y86g5h", ut:"38018814"},
+{id:0002571397, nom:"BOUNIF", prenom:"AYA ROUWIDA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"p3y86g5h", ut:"38018504"},
+{id:0002578791, nom:"BOUNAIM", prenom:"FIRDAWS", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"8dfm324i", ut:"38611306"},
+{id:0003689508, nom:"DJELOUAT", prenom:"FATIMA ZOHRA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"293s5muv", ut:"38005010"},
+{id:0003676622, nom:"BELARBI", prenom:"MERWA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"i887p8ej", ut:"37502615"},
+{id:0003652389, nom:"SMAIN", prenom:"NADJAH", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"94f8ae9a", ut:"38012303"},
+{id:0003634423, nom:"SEBTI", prenom:"MOHAMMED ALAA EDDINE", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"68nt5uw2", ut:"38042008"},
+{id:0002602247, nom:"MEFTAH", prenom:"HADIL", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"f5633qfj", ut:"37502820"},
+{id:222, nom:"YAHIAOUI", prenom:"OUR EL HOUDA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"3n92y9mw", ut:"38611111"},
+{id:0002625070, nom:"BOUAZIZ", prenom:"MOHAMED ELAMINE", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"q428yvp9", ut:"37502519"},
+{id:0002582627, nom:"ABBAS", prenom:"DJEHINA", spe:"Manipulateurs En Imagerie Médicale De Santé Publique", mp:"2588fzuu", ut:"37508412"},
+
+];
+
+// دالة البحث
+function searchStudent() {
+    const id = parseInt(document.getElementById("studentId").value);
+    const student = students.find(s => s.id === id);
+    const resultDiv = document.getElementById("result");
+    
+    if(student) {
+        resultDiv.innerHTML = `
+            <strong>الاسم:</strong> ${student.nom} <br>
+            <strong>اللقب:</strong> ${student.prenom} <br>
+            <strong>التخصص:</strong> ${student.spe} <br>
+            <strong>الرقم السري:</strong> ${student.mp} <br>
+            <strong>المستخدم:</strong> ${student.ut} <br>
+            <strong>الرابط التعليمي:</strong> <a href="https://learn.sante.gov.dz/" target="_blank">learn.sante.gov.dz</a>
+        `;
+    } else {
+        resultDiv.innerHTML = "لم يتم العثور على الطالب بالرقم المدخل.";
+    }
+}
+</script>
+
+</body>
+</html>
